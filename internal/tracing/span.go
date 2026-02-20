@@ -6,7 +6,7 @@ import (
 )
 
 type Span struct {
-	mu        sync.Mutex        // Add this line
+	mu        sync.Mutex        // Protects the span from concurrent writes
 	TraceID   string            `json:"trace_id"`
 	SpanID    string            `json:"span_id"`
 	ParentID  string            `json:"parent_id"`
@@ -16,9 +16,12 @@ type Span struct {
 	Tags      map[string]string `json:"tags"`
 }
 
-// Add a method to safely add tags
+// SetTag adds metadata to the span in a thread-safe way
 func (s *Span) SetTag(key, value string) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
+	if s.Tags == nil {
+		s.Tags = make(map[string]string)
+	}
 	s.Tags[key] = value
 }

@@ -12,7 +12,7 @@ func TraceMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// 1. Try to get the TraceID from the incoming request headers
 		traceID := r.Header.Get(TraceHeader)
-		
+
 		ctx := r.Context()
 		if traceID != "" {
 			// If it exists, we inject a "dummy" span to act as the parent
@@ -26,5 +26,9 @@ func TraceMiddleware(next http.Handler) http.Handler {
 
 		// 3. Pass the new context (with the span) down to the actual handler
 		next.ServeHTTP(w, r.WithContext(newCtx))
+
+		// AUTOMATIC TAGGING:
+		span.SetTag("http.user_agent", r.UserAgent())
+		span.SetTag("http.remote_addr", r.RemoteAddr)
 	})
 }

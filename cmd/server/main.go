@@ -9,13 +9,17 @@ import (
 )
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
-	// Start a child span inside the handler to simulate DB work
-	// This ensures data is written EVERY time you hit the URL
+	// 1. Start the span
 	_, childSpan := tracing.StartSpan(r.Context(), "database-query")
-	fmt.Println("Processing database query...")
+	
+	// 2. Use our new SetTag method!
+	childSpan.SetTag("db.system", "postgresql")
+	childSpan.SetTag("http.method", r.Method)
+	
+	fmt.Println("Processing query with metadata...")
 	childSpan.End()
 
-	fmt.Fprintf(w, "Hello from LoomDB Traced Server!")
+	fmt.Fprintf(w, "LoomDB: Metadata Recorded!")
 }
 
 func main() {

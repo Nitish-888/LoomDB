@@ -54,3 +54,11 @@ func (s *Span) End() {
 		GlobalExporter.Export(s)
 	}
 }
+
+// SpanFromContext safely retrieves a span from a Go context
+func SpanFromContext(ctx context.Context) *Span {
+	if span, ok := ctx.Value("span").(*Span); ok {
+		return span
+	}
+	return nil
+}
