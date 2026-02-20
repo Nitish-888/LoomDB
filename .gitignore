@@ -1,0 +1,10 @@
+# Binaries
+*.exe
+*.test
+bin/
+
+# Trace Data
+traces.json
+
+# Go dependencies
+vendor/
