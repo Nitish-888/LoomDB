@@ -1,7 +1,10 @@
 package exporter
 
 import (
+	"encoding/json"
 	"fmt"
+	"os"
+	"sync"
 	"github.com/Nitish_Thotakura/loomdb/internal/tracing"
 )
 
@@ -10,11 +13,31 @@ type SpanExporter interface {
 	Export(span *tracing.Span)
 }
 
-// ConsoleExporter simply prints spans to the terminal.
-type ConsoleExporter struct{}
+// FileExporter saves spans to a local JSON file.
+type FileExporter struct {
+	FilePath string
+	mu       sync.Mutex
+}
 
-func (ce *ConsoleExporter) Export(span *tracing.Span) {
-	duration := span.EndTime.Sub(span.StartTime)
-	fmt.Printf("[LoomDB Export] Name: %s | TraceID: %s | SpanID: %s | Duration: %v\n", 
-		span.Name, span.TraceID, span.SpanID, duration)
+// NewFileExporter creates a new instance of FileExporter.
+// This matches the call in your main.go!
+func NewFileExporter(path string) *FileExporter {
+	return &FileExporter{FilePath: path}
+}
+
+func (fe *FileExporter) Export(span *tracing.Span) {
+	fe.mu.Lock()
+	defer fe.mu.Unlock()
+
+	// Open file in Append mode, create if it doesn't exist.
+	f, err := os.OpenFile(fe.FilePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		fmt.Printf("Error opening trace file: %v\n", err)
+		return
+	}
+	defer f.Close()
+
+	// Convert span to JSON and write a new line.
+	data, _ := json.Marshal(span)
+	f.Write(append(data, '\n'))
 }

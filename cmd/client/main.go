@@ -10,11 +10,10 @@ import (
 )
 
 func main() {
-	tracing.GlobalExporter = &exporter.ConsoleExporter{}
-
+	tracing.GlobalExporter = exporter.NewFileExporter("client_traces.json")
 	// 1. Start a span for the client's work
 	ctx, span := tracing.StartSpan(context.Background(), "client-operation")
-	defer span.End()
+    defer span.End()
 
 	// 2. Prepare the HTTP request to the server
 	req, _ := http.NewRequestWithContext(ctx, "GET", "http://localhost:8080/", nil)
