@@ -40,17 +40,12 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	// Initialize FileExporter to save traces locally
-	tracing.GlobalExporter = exporter.NewFileExporter("traces.json")
+	// FIX: Use BatchExporter (saves every 5 spans OR every 5 seconds)
+	tracing.GlobalExporter = exporter.NewBatchExporter("traces.json", 5)
 
 	mux := http.NewServeMux()
-
-	// Wrap the handler with Middleware to automate top-level tracing
 	mux.Handle("/", tracing.TraceMiddleware(http.HandlerFunc(helloHandler)))
 
-	fmt.Println("🚀 LoomDB Server listening on :8080")
-	fmt.Println("📝 Saving traces to traces.json")
-
-	// Start the server
+	fmt.Println("🚀 LoomDB Server with Batch Exporting on :8080")
 	http.ListenAndServe(":8080", mux)
 }

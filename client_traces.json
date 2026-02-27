@@ -4,3 +4,6 @@
 {"trace_id":"3bc2734efe05d8b2","span_id":"f4401b0f30b9a35d","parent_id":"","name":"client-operation","start_time":"2026-02-20T15:04:59.3696671-06:00","end_time":"2026-02-20T15:04:59.3809659-06:00","tags":{}}
 {"trace_id":"eafe436ca6b2108f","span_id":"2f5f20c5faff4b05","parent_id":"","name":"client-operation","start_time":"2026-02-20T15:05:05.3201043-06:00","end_time":"2026-02-20T15:05:05.3301218-06:00","tags":{}}
 {"trace_id":"9111c750824cfdf5","span_id":"56ee3439066cf81c","parent_id":"","name":"client-operation","start_time":"2026-02-22T20:24:29.3022469-06:00","end_time":"2026-02-22T20:24:29.3441533-06:00","tags":{},"events":null}
+{"trace_id":"b055925d4504217d","span_id":"73c3f00505496e5c","parent_id":"","name":"client-operation","start_time":"2026-02-26T20:29:58.3326149-06:00","end_time":"2026-02-26T20:29:58.3687351-06:00","tags":{},"events":null}
+{"trace_id":"e5be872b1e2cf1d2","span_id":"1baa85d22424ca24","parent_id":"","name":"client-operation","start_time":"2026-02-26T20:30:00.7177501-06:00","end_time":"2026-02-26T20:30:00.7561694-06:00","tags":{},"events":null}
+{"trace_id":"9e8437d5799fbec4","span_id":"f6bb0c2bdc61140f","parent_id":"","name":"client-operation","start_time":"2026-02-26T20:30:02.5186531-06:00","end_time":"2026-02-26T20:30:02.5584438-06:00","tags":{},"events":null}
