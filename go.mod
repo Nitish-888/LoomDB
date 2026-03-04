@@ -1,4 +1,4 @@
-module github.com/Nitish_Thotakura/loomdb
+module github.com/Nitish-888/loomdb
 
 go 1.25.0
 
