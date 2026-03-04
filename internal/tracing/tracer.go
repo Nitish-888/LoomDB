@@ -2,62 +2,35 @@ package tracing
 
 import (
 	"context"
-	"crypto/rand"
 	"fmt"
-	"time"
+	"math/rand"
 )
 
-var GlobalExporter interface {
+// Exporter defines the interface for sending spans to a destination
+type Exporter interface {
 	Export(span *Span)
 }
 
-// StartSpan creates a new span and attaches it to the context.
-func StartSpan(ctx context.Context, name string) (context.Context, *Span) {
-	// Look for an existing span in the context to find the ParentID
-	parent, _ := ctx.Value("span").(*Span)
+// Global Variables shared across the tracing package
+var (
+	GlobalExporter Exporter
+	SamplingRate   = 0.2 // 20% of traces are kept
+)
 
-	newSpan := &Span{
-		Name:      name,
-		StartTime: time.Now(),
-		SpanID:    generateID(),
-		Tags:      make(map[string]string),
-	}
+// contextKey is a private type to prevent collisions in context.Context
+type contextKey string
+const spanKey contextKey = "span"
 
-	if parent != nil {
-		// Link this span to the existing trace
-		newSpan.TraceID = parent.TraceID
-		newSpan.ParentID = parent.SpanID
-	} else {
-		// This is the beginning of a brand new trace
-		newSpan.TraceID = generateID()
-	}
-
-	// Return a new context containing the current span
-	newCtx := context.WithValue(ctx, "span", newSpan)
-	return newCtx, newSpan
-}
-
-// generateID creates a simple random hex string for IDs
+// generateID creates a simple random hex string for IDs (backup helper)
 func generateID() string {
 	b := make([]byte, 8)
 	rand.Read(b)
 	return fmt.Sprintf("%x", b)
 }
 
-// End sets the end time for the span. 
-// In a real system, this is where you'd send the data to a database.
-
-
-func (s *Span) End() {
-	s.EndTime = time.Now()
-	if GlobalExporter != nil {
-		GlobalExporter.Export(s)
-	}
-}
-
 // SpanFromContext safely retrieves a span from a Go context
 func SpanFromContext(ctx context.Context) *Span {
-	if span, ok := ctx.Value("span").(*Span); ok {
+	if span, ok := ctx.Value(spanKey).(*Span); ok {
 		return span
 	}
 	return nil

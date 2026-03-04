@@ -1,9 +1,16 @@
 package tracing
 
 import (
+	"context"
+	"math/rand"
 	"sync"
 	"time"
+
+	"github.com/google/uuid"
 )
+
+// NOTE: GlobalExporter, SamplingRate, and spanKey are now 
+// defined in tracer.go. Do not redeclare them here!
 
 type Event struct {
 	Name      string    `json:"name"`
@@ -11,7 +18,7 @@ type Event struct {
 }
 
 type Span struct {
-	mu        sync.Mutex        // Protects the span from concurrent writes
+	mu        sync.Mutex        `json:"-"` // Exclude mutex from JSON
 	TraceID   string            `json:"trace_id"`
 	SpanID    string            `json:"span_id"`
 	ParentID  string            `json:"parent_id"`
@@ -20,9 +27,49 @@ type Span struct {
 	EndTime   time.Time         `json:"end_time"`
 	Tags      map[string]string `json:"tags"`
 	Events    []Event           `json:"events"`
+	Sampled   bool              `json:"sampled"` // The decision flag
 }
 
-// SetTag adds metadata to the span in a thread-safe way
+func StartSpan(ctx context.Context, name string) (context.Context, *Span) {
+	spanID := uuid.New().String()
+	parentSpan, ok := ctx.Value(spanKey).(*Span)
+
+	var traceID string
+	var parentID string
+	var sampled bool
+
+	if ok {
+		// Child Span: Inherit TraceID and the Parent's sampling decision
+		traceID = parentSpan.TraceID
+		parentID = parentSpan.SpanID
+		sampled = parentSpan.Sampled
+	} else {
+		// Root Span: Create new TraceID and make a NEW sampling decision
+		traceID = uuid.New().String()
+		sampled = rand.Float64() < SamplingRate
+	}
+
+	span := &Span{
+		TraceID:   traceID,
+		SpanID:    spanID,
+		ParentID:  parentID,
+		Name:      name,
+		StartTime: time.Now(),
+		Tags:      make(map[string]string),
+		Sampled:   sampled,
+	}
+
+	return context.WithValue(ctx, spanKey, span), span
+}
+
+func (s *Span) End() {
+	s.EndTime = time.Now()
+	// Only send to exporter if the trace was sampled
+	if s.Sampled && GlobalExporter != nil {
+		GlobalExporter.Export(s)
+	}
+}
+
 func (s *Span) SetTag(key, value string) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -41,7 +88,6 @@ func (s *Span) AddEvent(name string) {
 	})
 }
 
-// RecordError is a helper to quickly tag a span as failed
 func (s *Span) RecordError(err error) {
 	if err == nil {
 		return

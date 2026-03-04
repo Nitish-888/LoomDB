@@ -9,3 +9,4 @@
 {"trace_id":"9e8437d5799fbec4","span_id":"f6bb0c2bdc61140f","parent_id":"","name":"client-operation","start_time":"2026-02-26T20:30:02.5186531-06:00","end_time":"2026-02-26T20:30:02.5584438-06:00","tags":{},"events":null}
 {"trace_id":"f8cb9dab9a7196ed","span_id":"96fc93e26cc820fc","parent_id":"","name":"client-operation","start_time":"2026-02-26T20:33:59.6679912-06:00","end_time":"2026-02-26T20:33:59.7080424-06:00","tags":{},"events":null}
 {"trace_id":"707975043b593d5b","span_id":"96f52c8d519509f5","parent_id":"","name":"client-operation","start_time":"2026-02-26T20:34:03.8384537-06:00","end_time":"2026-02-26T20:34:03.8784972-06:00","tags":{},"events":null}
+{"trace_id":"952e9023-9819-44d7-ad2d-1486a9c9bb8e","span_id":"4925aac8-03f7-493e-90c7-dc984e0b0bb5","parent_id":"","name":"client-operation","start_time":"2026-03-04T12:36:20.1066205-06:00","end_time":"2026-03-04T12:36:20.1177619-06:00","tags":{},"events":null,"sampled":true}
