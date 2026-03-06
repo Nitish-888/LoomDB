@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 	"sync"
-	"github.com/Nitish_Thotakura/loomdb/internal/tracing"
+	"github.com/Nitish-888/loomdb/internal/tracing"
 )
 
 // SpanExporter is an interface for sending spans to a backend.

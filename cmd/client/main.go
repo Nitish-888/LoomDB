@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 	"time"
-	"github.com/Nitish_Thotakura/loomdb/internal/tracing"
-	"github.com/Nitish_Thotakura/loomdb/pkg/exporter"
+	"github.com/Nitish-888/loomdb/internal/tracing"
+	"github.com/Nitish-888/loomdb/pkg/exporter"
 )
 
 func main() {

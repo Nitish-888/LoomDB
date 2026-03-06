@@ -11,7 +11,7 @@ import (
 
 func main() {
 	// 1. Define Search Flags
-	traceID := flag.String("id", "", "Search by specific Trace ID")
+	traceID := flag.String("id", "", "`Search by specific Trace ID")
 	showErrors := flag.Bool("errors", false, "Show only traces with errors")
 	flag.Parse()
 

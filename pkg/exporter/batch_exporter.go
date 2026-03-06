@@ -6,7 +6,7 @@ import (
 	"os"
 	"sync"
 	"time"
-	"github.com/Nitish_Thotakura/loomdb/internal/tracing"
+	"github.com/Nitish-888/loomdb/internal/tracing"
 )
 
 type BatchExporter struct {
